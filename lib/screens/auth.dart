@@ -10,10 +10,14 @@ class AuthScreen extends StatefulWidget {
 }
 
 class _AuthScreenState extends State<AuthScreen> {
+  bool _obscurePassword = true;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
+        width: double.infinity,
+        height: double.infinity,
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: [
@@ -42,7 +46,47 @@ class _AuthScreenState extends State<AuthScreen> {
                 child: SingleChildScrollView(
                   child: Padding(
                     padding: const EdgeInsets.all(16),
-                    child: Form(child: Column(children: [])),
+                    child: Form(
+                      child: Column(
+                        children: [
+                          TextFormField(
+                            decoration: InputDecoration(
+                              labelText: "Email Address",
+                            ),
+                            keyboardType: TextInputType.emailAddress,
+                            autocorrect: false,
+                            textCapitalization: TextCapitalization.none,
+                            textInputAction: TextInputAction.next,
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return "Email is required";
+                              }
+                              // return null;
+                            },
+                          ),
+                          const SizedBox(height: 12),
+                          TextFormField(
+                            decoration: InputDecoration(
+                              labelText: "Password",
+                              suffixIcon: IconButton(
+                                onPressed: () {
+                                  setState(() {
+                                    _obscurePassword = !_obscurePassword;
+                                  });
+                                },
+                                icon: Icon(
+                                  !_obscurePassword
+                                      ? Icons.visibility
+                                      : Icons.visibility_off,
+                                ),
+                              ),
+                            ),
+                            keyboardType: TextInputType.visiblePassword,
+                            obscureText: _obscurePassword,
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
                 ),
               ),
