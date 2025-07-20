@@ -25,94 +25,103 @@ class _AuthScreenState extends State<AuthScreen> {
               Theme.of(context).colorScheme.primary,
               Theme.of(context).colorScheme.onPrimaryContainer,
             ],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
+            // begin: Alignment.topLeft,
+            // end: Alignment.bottomRight,
           ),
         ),
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              Container(
-                margin: const EdgeInsets.only(
-                  top: 60,
-                  bottom: 20,
-                  left: 20,
-                  right: 20,
+        child: Center(
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                Container(
+                  margin: const EdgeInsets.only(
+                    top: 60,
+                    bottom: 20,
+                    left: 20,
+                    right: 20,
+                  ),
+                  width: 200,
+                  child: Image.asset('assets/images/chat.png'),
                 ),
-                width: 200,
-                child: Image.asset('assets/images/chat.png'),
-              ),
-              Card(
-                margin: const EdgeInsets.all(20),
-                child: SingleChildScrollView(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Form(
-                      child: Column(
-                        children: [
-                          TextFormField(
-                            decoration: InputDecoration(
-                              labelText: "Email Address",
+                Card(
+                  margin: const EdgeInsets.all(20),
+                  child: SingleChildScrollView(
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Form(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            TextFormField(
+                              decoration: InputDecoration(
+                                labelText: "Email Address",
+                              ),
+                              keyboardType: TextInputType.emailAddress,
+                              autocorrect: false,
+                              textCapitalization: TextCapitalization.none,
+                              textInputAction: TextInputAction.next,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return "Email is required";
+                                }
+                                return null;
+                                // return null;
+                              },
                             ),
-                            keyboardType: TextInputType.emailAddress,
-                            autocorrect: false,
-                            textCapitalization: TextCapitalization.none,
-                            textInputAction: TextInputAction.next,
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return "Email is required";
-                              }
-                              return null;
-                              // return null;
-                            },
-                          ),
-                          const SizedBox(height: 12),
-                          TextFormField(
-                            decoration: InputDecoration(
-                              labelText: "Password",
-                              suffixIcon: IconButton(
-                                onPressed: () {
-                                  setState(() {
-                                    _obscurePassword = !_obscurePassword;
-                                  });
-                                },
-                                icon: Icon(
-                                  !_obscurePassword
-                                      ? Icons.visibility
-                                      : Icons.visibility_off,
+                            const SizedBox(height: 12),
+                            TextFormField(
+                              decoration: InputDecoration(
+                                labelText: "Password",
+                                suffixIcon: IconButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      _obscurePassword = !_obscurePassword;
+                                    });
+                                  },
+                                  icon: Icon(
+                                    !_obscurePassword
+                                        ? Icons.visibility
+                                        : Icons.visibility_off,
+                                  ),
                                 ),
                               ),
+                              keyboardType: TextInputType.visiblePassword,
+                              obscureText: _obscurePassword,
+                              autocorrect: false,
+                              validator: (value) => value!.isEmpty
+                                  ? "Password is required"
+                                  : null,
                             ),
-                            keyboardType: TextInputType.visiblePassword,
-                            obscureText: _obscurePassword,
-                            autocorrect: false,
-                            validator: (value) =>
-                                value!.isEmpty ? "Password is required" : null,
-                          ),
-                          const SizedBox(height: 12),
-                          ElevatedButton(
-                            onPressed: () {},
-                            child: Text(_isLogin ? "Login" : "Signup"),
-                          ),
-                          TextButton(
-                            onPressed: () {
-                              setState(() {
-                                _isLogin = !_isLogin;
-                              });
-                            },
-                            child: Text(
-                              _isLogin
-                                  ? "Create an account"
-                                  : "I already have an account",
+                            const SizedBox(height: 12),
+                            ElevatedButton(
+                              onPressed: () {},
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Theme.of(
+                                  context,
+                                ).colorScheme.primaryContainer,
+                              ),
+                              child: Text(_isLogin ? "Login" : "Signup"),
                             ),
-                          ),
-                        ],
+                            TextButton(
+                              onPressed: () {
+                                setState(() {
+                                  _isLogin = !_isLogin;
+                                });
+                              },
+                              child: Text(
+                                _isLogin
+                                    ? "Create an account"
+                                    : "I already have an account",
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
