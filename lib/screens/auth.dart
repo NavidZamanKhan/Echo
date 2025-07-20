@@ -11,6 +11,7 @@ class AuthScreen extends StatefulWidget {
 
 class _AuthScreenState extends State<AuthScreen> {
   bool _obscurePassword = true;
+  bool _isLogin = true;
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +34,7 @@ class _AuthScreenState extends State<AuthScreen> {
             children: [
               Container(
                 margin: const EdgeInsets.only(
-                  top: 30,
+                  top: 60,
                   bottom: 20,
                   left: 20,
                   right: 20,
@@ -61,6 +62,7 @@ class _AuthScreenState extends State<AuthScreen> {
                               if (value == null || value.isEmpty) {
                                 return "Email is required";
                               }
+                              return null;
                               // return null;
                             },
                           ),
@@ -83,6 +85,26 @@ class _AuthScreenState extends State<AuthScreen> {
                             ),
                             keyboardType: TextInputType.visiblePassword,
                             obscureText: _obscurePassword,
+                            autocorrect: false,
+                            validator: (value) =>
+                                value!.isEmpty ? "Password is required" : null,
+                          ),
+                          const SizedBox(height: 12),
+                          ElevatedButton(
+                            onPressed: () {},
+                            child: Text(_isLogin ? "Login" : "Signup"),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              setState(() {
+                                _isLogin = !_isLogin;
+                              });
+                            },
+                            child: Text(
+                              _isLogin
+                                  ? "Create an account"
+                                  : "I already have an account",
+                            ),
                           ),
                         ],
                       ),
