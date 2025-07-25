@@ -55,7 +55,14 @@ class _AuthScreenState extends State<AuthScreen> {
                             children: [
                               Padding(
                                 padding: const EdgeInsets.all(8),
-                                child: Text("Email Address"),
+                                child: Text(
+                                  "Email Address",
+                                  style: TextStyle(
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.onPrimary,
+                                  ),
+                                ),
                               ),
                               TextFormField(
                                 decoration: InputDecoration(
@@ -72,7 +79,10 @@ class _AuthScreenState extends State<AuthScreen> {
                                 textCapitalization: TextCapitalization.none,
                                 textInputAction: TextInputAction.next,
                                 validator: (value) {
-                                  if (value == null || value.isEmpty) {
+                                  if (value == null ||
+                                      value.trim().isEmpty ||
+                                      !value.contains("@") ||
+                                      !value.contains(".")) {
                                     return "Email is required";
                                   }
                                   return null;
@@ -87,7 +97,14 @@ class _AuthScreenState extends State<AuthScreen> {
                             children: [
                               Padding(
                                 padding: const EdgeInsets.all(8),
-                                child: Text("Password"),
+                                child: Text(
+                                  "Password",
+                                  style: TextStyle(
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.onPrimary,
+                                  ),
+                                ),
                               ),
                               TextFormField(
                                 decoration: InputDecoration(
