@@ -98,11 +98,18 @@ flutter pub get
 4. Select Flutter as your platform
 5. Follow the setup wizard to configure your project
 
-#### Update Configuration Files
+#### ⚠️ SECURITY: Configuration Files
+**IMPORTANT:** Firebase configuration files contain sensitive API keys and are excluded from version control.
 
-- Ensure `google-services.json` is in `android/app/`
-- Verify `firebase_options.dart` is properly configured
-- Check `firebase.json` has correct project settings
+1. **Copy the template**: `cp lib/firebase_options_template.dart lib/firebase_options.dart`
+2. **Fill in your Firebase configuration** from your Firebase Console
+3. **Never commit** `firebase_options.dart` or `google-services.json` to version control
+4. **Use environment variables** for production deployments
+
+#### Required Files (NOT in version control):
+- `lib/firebase_options.dart` - Firebase configuration
+- `android/app/google-services.json` - Android Firebase config
+- `ios/Runner/GoogleService-Info.plist` - iOS Firebase config
 
 ### 4. Run the Application
 
