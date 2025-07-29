@@ -29,13 +29,8 @@ class App extends StatelessWidget {
         builder: (ctx, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const SplashScreen();
-          } else {
-            if (snapshot.hasData) {
-              return const ChatScreen();
-            } else {
-              return const AuthScreen();
-            }
           }
+          return snapshot.hasData ? const ChatScreen() : const AuthScreen();
         },
       ),
     );
