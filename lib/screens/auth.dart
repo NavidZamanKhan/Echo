@@ -70,11 +70,6 @@ class _AuthScreenState extends State<AuthScreen> {
           email: _enteredEmail,
           password: _enteredPassword,
         );
-        // if (userCredentials.user != null) {
-        //   Navigator.of(context).pushReplacement(
-        //     MaterialPageRoute(builder: (context) => const HomeScreen()),
-        //   );
-        // }
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
