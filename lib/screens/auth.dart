@@ -33,8 +33,28 @@ class _AuthScreenState extends State<AuthScreen> {
         return 'This email format looks off.';
       case 'network-request-failed':
         return 'Network issue. Please check your internet.';
+      case 'user-disabled':
+        return 'This account has been disabled.';
+      case 'too-many-requests':
+        return 'Too many failed attempts. Please try again later.';
+      case 'operation-not-allowed':
+        return 'This operation is not allowed.';
+      case 'invalid-credential':
+        return 'Invalid email or password.';
+      case 'account-exists-with-different-credential':
+        return 'An account already exists with the same email but different sign-in credentials.';
+      case 'requires-recent-login':
+        return 'This operation requires recent authentication. Please log in again.';
+      case 'credential-already-in-use':
+        return 'This credential is already associated with a different user account.';
+      case 'invalid-verification-code':
+        return 'Invalid verification code.';
+      case 'invalid-verification-id':
+        return 'Invalid verification ID.';
+      case 'session-expired':
+        return 'Your session has expired. Please log in again.';
       default:
-        return 'Something went wrong. Please try again later.';
+        return 'Something went wrong. Please try again. (Error: $code)';
     }
   }
 
@@ -89,10 +109,24 @@ class _AuthScreenState extends State<AuthScreen> {
       }
     } on FirebaseAuthException catch (error) {
       ScaffoldMessenger.of(context).clearSnackBars();
+      print('Firebase Auth Error Code: ${error.code}'); // Debug print
       final errorMessage = getFriendlyFirebaseError(error.code);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(errorMessage),
+          backgroundColor: Theme.of(context).colorScheme.error,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    } catch (error) {
+      ScaffoldMessenger.of(context).clearSnackBars();
+      print('General Error: $error'); // Debug print
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('An unexpected error occurred: $error'),
           backgroundColor: Theme.of(context).colorScheme.error,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
