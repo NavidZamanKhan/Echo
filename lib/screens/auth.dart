@@ -179,7 +179,9 @@ class _AuthScreenState extends State<AuthScreen> {
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              if (!_isLogin) UserImagePicker(),
+                              Center(
+                                child: !_isLogin ? UserImagePicker() : null,
+                              ),
                               Padding(
                                 padding: const EdgeInsets.all(8),
                                 child: Text(
