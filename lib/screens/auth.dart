@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:echo_chat_application/widgets/user_image_picker.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -124,6 +125,15 @@ class _AuthScreenState extends State<AuthScreen> {
             .child("${userCredentials.user!.uid}.jpg");
         await storageRef.putFile(_pickedImage!);
         final imageUrl = await storageRef.getDownloadURL();
+
+        FirebaseFirestore.instance
+            .collection("users")
+            .doc(userCredentials.user!.uid)
+            .set({
+              'username': 'to be done...',
+              'email': _enteredEmail,
+              'image_url': imageUrl,
+            });
 
         if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
