@@ -24,6 +24,7 @@ class _AuthScreenState extends State<AuthScreen> {
   bool _obscurePassword = true;
   bool _isLogin = true;
   File? _pickedImage;
+  var _isAuthenticating = false;
 
   String getFriendlyFirebaseError(String code) {
     switch (code) {
@@ -75,6 +76,9 @@ class _AuthScreenState extends State<AuthScreen> {
     if (!mounted) return;
 
     try {
+      setState(() {
+        _isAuthenticating = true;
+      });
       if (_isLogin) {
         final usercredentials = await _firebase.signInWithEmailAndPassword(
           email: _enteredEmail,
@@ -99,10 +103,13 @@ class _AuthScreenState extends State<AuthScreen> {
           email: _enteredEmail,
           password: _enteredPassword,
         );
-        FirebaseStorage.instance
+        final storageRef = FirebaseStorage.instance
             .ref()
             .child("user_images")
             .child("${userCredentials.user!.uid}.jpg");
+        await storageRef.putFile(_pickedImage!);
+        final imageUrl = await storageRef.getDownloadURL();
+
         if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -132,6 +139,9 @@ class _AuthScreenState extends State<AuthScreen> {
           behavior: SnackBarBehavior.floating,
         ),
       );
+      setState(() {
+        _isAuthenticating = false;
+      });
     } catch (error) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).clearSnackBars();
@@ -145,6 +155,9 @@ class _AuthScreenState extends State<AuthScreen> {
           behavior: SnackBarBehavior.floating,
         ),
       );
+      setState(() {
+        _isAuthenticating = false;
+      });
     }
   }
 
@@ -189,14 +202,13 @@ class _AuthScreenState extends State<AuthScreen> {
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Center(
-                                child: !_isLogin
-                                    ? UserImagePicker(
-                                        onPickedImage: (pickedImage) =>
-                                            _pickedImage = pickedImage,
-                                      )
-                                    : null,
-                              ),
+                              if (!_isLogin)
+                                Center(
+                                  child: UserImagePicker(
+                                    onPickedImage: (pickedImage) =>
+                                        _pickedImage = pickedImage,
+                                  ),
+                                ),
                               Padding(
                                 padding: const EdgeInsets.all(8),
                                 child: Text(
@@ -286,36 +298,42 @@ class _AuthScreenState extends State<AuthScreen> {
                             ],
                           ),
                           const SizedBox(height: 32),
-                          ElevatedButton(
-                            onPressed: _submit,
-                            style: ElevatedButton.styleFrom(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(16),
+                          if (!_isAuthenticating)
+                            ElevatedButton(
+                              onPressed: _submit,
+                              style: ElevatedButton.styleFrom(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(16),
+                                ),
+                                minimumSize: const Size(double.infinity, 50),
+                                backgroundColor: Theme.of(
+                                  context,
+                                ).colorScheme.primaryContainer,
                               ),
-                              minimumSize: const Size(double.infinity, 50),
-                              backgroundColor: Theme.of(
-                                context,
-                              ).colorScheme.primaryContainer,
+                              child: Text(_isLogin ? "Login" : "Signup"),
                             ),
-                            child: Text(_isLogin ? "Login" : "Signup"),
-                          ),
                           const SizedBox(height: 8),
-                          TextButton(
-                            onPressed: () {
-                              setState(() {
-                                _isLogin = !_isLogin;
-                              });
-                            },
-                            child: Text(
-                              _isLogin
-                                  ? "Create an account"
-                                  : "I already have an account",
-                              style: TextStyle(
-                                fontSize: 16,
-                                color: Theme.of(context).colorScheme.onPrimary,
+                          if (_isAuthenticating)
+                            const CircularProgressIndicator(),
+                          if (!_isAuthenticating)
+                            TextButton(
+                              onPressed: () {
+                                setState(() {
+                                  _isLogin = !_isLogin;
+                                });
+                              },
+                              child: Text(
+                                _isLogin
+                                    ? "Create an account"
+                                    : "I already have an account",
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.onPrimary,
+                                ),
                               ),
                             ),
-                          ),
                         ],
                       ),
                     ),
