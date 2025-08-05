@@ -207,16 +207,17 @@ class _AuthScreenState extends State<AuthScreen> {
           child: SingleChildScrollView(
             child: Column(
               children: [
-                Container(
-                  margin: const EdgeInsets.only(
-                    top: 60,
-                    bottom: 20,
-                    left: 20,
-                    right: 20,
+                if (_isLogin)
+                  Container(
+                    margin: const EdgeInsets.only(
+                      top: 60,
+                      bottom: 20,
+                      left: 20,
+                      right: 20,
+                    ),
+                    width: 150,
+                    child: Image.asset('assets/images/chat.png'),
                   ),
-                  width: 150,
-                  child: Image.asset('assets/images/chat.png'),
-                ),
                 SingleChildScrollView(
                   child: Padding(
                     padding: const EdgeInsets.all(16),
