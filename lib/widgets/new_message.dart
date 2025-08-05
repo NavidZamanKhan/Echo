@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../data/emojis.dart';
 
 class NewMessage extends StatefulWidget {
   const NewMessage({super.key});
@@ -14,187 +15,17 @@ class NewMessageState extends State<NewMessage> {
   bool _showEmojiPicker = false;
   FocusNode _focusNode = FocusNode();
 
-  final List<String> _emojis = [
-    '😀',
-    '😃',
-    '😄',
-    '😁',
-    '😆',
-    '😅',
-    '😂',
-    '🤣',
-    '😊',
-    '😇',
-    '🙂',
-    '🙃',
-    '😉',
-    '😌',
-    '😍',
-    '🥰',
-    '😘',
-    '😗',
-    '😙',
-    '😚',
-    '😋',
-    '😛',
-    '😝',
-    '😜',
-    '🤪',
-    '🤨',
-    '🧐',
-    '🤓',
-    '😎',
-    '🤩',
-    '🥳',
-    '😏',
-    '😒',
-    '😞',
-    '😔',
-    '😟',
-    '😕',
-    '🙁',
-    '☹️',
-    '😣',
-    '😖',
-    '😫',
-    '😩',
-    '🥺',
-    '😢',
-    '😭',
-    '😤',
-    '😠',
-    '😡',
-    '🤬',
-    '🤯',
-    '😳',
-    '🥵',
-    '🥶',
-    '😱',
-    '😨',
-    '😰',
-    '😥',
-    '😓',
-    '🤗',
-    '🤔',
-    '🤭',
-    '🤫',
-    '🤥',
-    '😶',
-    '😐',
-    '😑',
-    '😯',
-    '😦',
-    '😧',
-    '😮',
-    '😲',
-    '🥱',
-    '😴',
-    '🤤',
-    '😪',
-    '😵',
-    '🤐',
-    '🥴',
-    '🤢',
-    '🤮',
-    '🤧',
-    '😷',
-    '🤒',
-    '🤕',
-    '🤑',
-    '🤠',
-    '💩',
-    '👻',
-    '💀',
-    '☠️',
-    '👽',
-    '👾',
-    '🤖',
-    '😺',
-    '😸',
-    '😹',
-    '😻',
-    '😼',
-    '😽',
-    '🙀',
-    '😿',
-    '😾',
-    '🙈',
-    '🙉',
-    '🙊',
-    '🐵',
-    '🐒',
-    '🦍',
-    '🦧',
-    '🐶',
-    '🐕',
-    '🐩',
-    '🐺',
-    '🦊',
-    '🦝',
-    '🐱',
-    '🐈',
-    '🦁',
-    '🐯',
-    '🐅',
-    '🐆',
-    '🐴',
-    '🐎',
-    '🦄',
-    '🦓',
-    '🦌',
-    '🐮',
-    '🐂',
-    '🐃',
-    '🐄',
-    '🐷',
-    '🐖',
-    '🐗',
-    '🐽',
-    '🐏',
-    '🐑',
-    '🐐',
-    '🐪',
-    '🐫',
-    '🦙',
-    '🦒',
-    '🐘',
-    '🦏',
-    '🦛',
-    '🐭',
-    '🐁',
-    '🐀',
-    '🐹',
-    '🐰',
-    '🐇',
-    '🐿️',
-    '🦫',
-    '🦔',
-    '🦇',
-    '🐻',
-    '🐨',
-    '🐼',
-    '🦥',
-    '🦦',
-    '🦨',
-    '🦘',
-    '🦡',
-    '🐾',
-    '🦃',
-    '🐔',
-    '🐓',
-    '🐣',
-    '🐤',
-    '🐥',
-    '🐦',
-    '🐧',
-    '🕊️',
-    '🦅',
-    '🦆',
-    '🦢',
-    '🦉',
-    '🦤',
-    '🪶',
-  ];
+  @override
+  void initState() {
+    super.initState();
+    _focusNode.addListener(() {
+      if (_focusNode.hasFocus && _showEmojiPicker) {
+        setState(() {
+          _showEmojiPicker = false;
+        });
+      }
+    });
+  }
 
   @override
   void dispose() {
@@ -223,18 +54,35 @@ class NewMessageState extends State<NewMessage> {
               Expanded(
                 child: TextField(
                   controller: _messageController,
+                  focusNode: _focusNode,
                   textCapitalization: TextCapitalization.sentences,
                   autocorrect: true,
                   enableSuggestions: true,
                   decoration: InputDecoration(
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
                     prefixIcon: IconButton(
                       onPressed: () {
-                        FocusScope.of(context).unfocus();
-                        setState(() {
-                          _showEmojiPicker = !_showEmojiPicker;
-                        });
+                        if (_showEmojiPicker) {
+                          // If emoji picker is open, close it and focus the text field
+                          setState(() {
+                            _showEmojiPicker = false;
+                          });
+                          _focusNode.requestFocus();
+                        } else {
+                          // If emoji picker is closed, open it and unfocus the text field
+                          FocusScope.of(context).unfocus();
+                          setState(() {
+                            _showEmojiPicker = true;
+                          });
+                        }
                       },
-                      icon: Icon(Icons.emoji_emotions_outlined),
+                      icon: Icon(
+                        _showEmojiPicker
+                            ? Icons.keyboard
+                            : Icons.emoji_emotions_outlined,
+                      ),
                     ),
                     labelText: "Send a message...",
                   ),
@@ -260,12 +108,12 @@ class NewMessageState extends State<NewMessage> {
                 crossAxisSpacing: 8,
                 mainAxisSpacing: 8,
               ),
-              itemCount: _emojis.length,
+              itemCount: EmojiData.emojis.length,
               itemBuilder: (context, index) {
                 return GestureDetector(
                   onTap: () {
                     setState(() {
-                      _messageController.text += _emojis[index];
+                      _messageController.text += EmojiData.emojis[index];
                     });
                   },
                   child: Container(
@@ -275,7 +123,7 @@ class NewMessageState extends State<NewMessage> {
                     ),
                     child: Center(
                       child: Text(
-                        _emojis[index],
+                        EmojiData.emojis[index],
                         style: const TextStyle(fontSize: 24),
                       ),
                     ),
