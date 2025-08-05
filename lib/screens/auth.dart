@@ -22,6 +22,7 @@ class _AuthScreenState extends State<AuthScreen> {
   final _form = GlobalKey<FormState>();
   var _enteredEmail = "";
   var _enteredPassword = "";
+  var _enteredUsername = "";
   bool _obscurePassword = true;
   bool _isLogin = true;
   File? _pickedImage;
@@ -130,7 +131,7 @@ class _AuthScreenState extends State<AuthScreen> {
             .collection("users")
             .doc(userCredentials.user!.uid)
             .set({
-              'username': 'to be done...',
+              'username': _enteredUsername,
               'email': _enteredEmail,
               'image_url': imageUrl,
             });
@@ -233,6 +234,44 @@ class _AuthScreenState extends State<AuthScreen> {
                                     onPickedImage: (pickedImage) =>
                                         _pickedImage = pickedImage,
                                   ),
+                                ),
+                              if (!_isLogin)
+                                Padding(
+                                  padding: const EdgeInsets.all(8),
+                                  child: Text(
+                                    "Username",
+                                    style: TextStyle(
+                                      color: Theme.of(
+                                        context,
+                                      ).colorScheme.onPrimary,
+                                    ),
+                                  ),
+                                ),
+                              if (!_isLogin)
+                                TextFormField(
+                                  decoration: InputDecoration(
+                                    filled: true,
+                                    fillColor: Colors.white,
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(16),
+                                      borderSide: BorderSide.none,
+                                    ),
+                                    hintText: "Username",
+                                  ),
+                                  keyboardType: TextInputType.name,
+                                  autocorrect: false,
+                                  textCapitalization: TextCapitalization.none,
+                                  textInputAction: TextInputAction.next,
+                                  validator: (value) {
+                                    if (value == null ||
+                                        value.trim().isEmpty ||
+                                        value.trim().length < 2) {
+                                      return "Please enter a valid username";
+                                    }
+                                    return null;
+                                  },
+                                  onSaved: (newValue) =>
+                                      _enteredUsername = newValue!,
                                 ),
                               Padding(
                                 padding: const EdgeInsets.all(8),
