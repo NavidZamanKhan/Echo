@@ -270,8 +270,9 @@ class _AuthScreenState extends State<AuthScreen> {
                                     }
                                     return null;
                                   },
-                                  onSaved: (newValue) =>
-                                      _enteredUsername = newValue!,
+                                  onSaved: (newValue) {
+                                    _enteredUsername = newValue!;
+                                  },
                                 ),
                               Padding(
                                 padding: const EdgeInsets.all(8),
