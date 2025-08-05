@@ -1,4 +1,8 @@
+import 'dart:io';
+
 import 'package:echo_chat_application/widgets/user_image_picker.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -19,6 +23,7 @@ class _AuthScreenState extends State<AuthScreen> {
   var _enteredPassword = "";
   bool _obscurePassword = true;
   bool _isLogin = true;
+  File? _pickedImage;
 
   String getFriendlyFirebaseError(String code) {
     switch (code) {
@@ -61,16 +66,17 @@ class _AuthScreenState extends State<AuthScreen> {
 
   void _submit() async {
     final isValid = _form.currentState!.validate();
-    if (!isValid) {
+    if (!isValid || !_isLogin && _pickedImage == null) {
       return;
     }
+
     _form.currentState!.save();
 
     if (!mounted) return;
 
     try {
       if (_isLogin) {
-        await _firebase.signInWithEmailAndPassword(
+        final usercredentials = await _firebase.signInWithEmailAndPassword(
           email: _enteredEmail,
           password: _enteredPassword,
         );
@@ -89,10 +95,14 @@ class _AuthScreenState extends State<AuthScreen> {
           ),
         );
       } else {
-        await _firebase.createUserWithEmailAndPassword(
+        final userCredentials = await _firebase.createUserWithEmailAndPassword(
           email: _enteredEmail,
           password: _enteredPassword,
         );
+        FirebaseStorage.instance
+            .ref()
+            .child("user_images")
+            .child("${userCredentials.user!.uid}.jpg");
         if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -180,7 +190,12 @@ class _AuthScreenState extends State<AuthScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Center(
-                                child: !_isLogin ? UserImagePicker() : null,
+                                child: !_isLogin
+                                    ? UserImagePicker(
+                                        onPickedImage: (pickedImage) =>
+                                            _pickedImage = pickedImage,
+                                      )
+                                    : null,
                               ),
                               Padding(
                                 padding: const EdgeInsets.all(8),
